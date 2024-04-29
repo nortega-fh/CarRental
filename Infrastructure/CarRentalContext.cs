@@ -7,8 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class CarRentalContext(DbContextOptions<CarRentalContext> options) : DbContext(options)
+public class CarRentalContext : DbContext
 {
+    public CarRentalContext(DbContextOptions<CarRentalContext> options) : base(options)
+    {
+
+    }
+
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<RentalBranch> RentalBranches { get; set; }
     public DbSet<Fee> Fees { get; set; }
