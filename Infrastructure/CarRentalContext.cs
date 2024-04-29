@@ -5,9 +5,9 @@ using Infrastructure.Users;
 using Infrastructure.Vehicles;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.DbContexts;
+namespace Infrastructure;
 
-public class CarRentalDbContext : DbContext
+public class CarRentalContext(DbContextOptions<CarRentalContext> options) : DbContext(options)
 {
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<RentalBranch> RentalBranches { get; set; }

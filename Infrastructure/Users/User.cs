@@ -13,7 +13,10 @@ public record User(
         string DriversLicenseNumber,
         string AddressLine1,
         string? AddressLine2,
-        string City,
-        UserRole Role,
-        List<Booking> Bookings
-    );
+        string City
+    )
+{
+
+    public virtual UserRole Role { get; set; } = null!;
+    public virtual List<Booking> Bookings { get; set; } = null!;
+}
