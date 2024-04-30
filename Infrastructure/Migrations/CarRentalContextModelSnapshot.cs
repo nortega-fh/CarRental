@@ -76,7 +76,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(2)
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal");
 
                     b.Property<string>("Description")
@@ -131,7 +131,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(2)
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal");
 
                     b.Property<string>("Description")
@@ -241,6 +241,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("DailyPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal");
 
                     b.Property<string>("Make")
@@ -257,8 +258,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid?>("RentalBranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -267,23 +269,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("RentalBranchId");
 
-                    b.HasIndex("TypeId");
-
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("Infrastructure.Vehicles.VehicleType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VehicleTypes");
                 });
 
             modelBuilder.Entity("Infrastructure.Bookings.Booking", b =>
@@ -382,14 +368,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Infrastructure.RentalBranches.RentalBranch", null)
                         .WithMany("Vehicles")
                         .HasForeignKey("RentalBranchId");
-
-                    b.HasOne("Infrastructure.Vehicles.VehicleType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("Infrastructure.RentalBranches.RentalBranch", b =>

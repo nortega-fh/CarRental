@@ -14,13 +14,14 @@ public class VehicleController(IVehicleService vehicleService, VehicleMapper map
     [HttpGet]
     public async Task<IActionResult> GetAllVehicles([FromQuery] int pageSize = DefaultPageSize, [FromQuery] int pageNumber = DefaultPageNumber)
     {
-        return Ok(await vehicleService.GetAllAsync(pageSize, pageNumber));
+        return Ok(mapper.ToVehicleResponseList(await vehicleService.GetAllAsync(pageSize, pageNumber)));
     }
 
     [HttpGet("{vehicleId}")]
     public async Task<IActionResult> GetVehicleById([FromRoute] Guid vehicleId)
     {
-        return Ok(await vehicleService.GetByIdAsync(vehicleId));
+        var vehicle = await vehicleService.GetByIdAsync(vehicleId);
+        return vehicle is null ? NotFound() : Ok(mapper.ToVehicleResponse(vehicle));
     }
 
     [HttpPost]
@@ -29,17 +30,17 @@ public class VehicleController(IVehicleService vehicleService, VehicleMapper map
         var isValidResult = validator.Validate(vehicleCreateReq);
         if (!isValidResult.IsValid)
             return BadRequest(isValidResult.Errors);
-        var createdVehicle = await vehicleService.CreateAsync(mapper.MapRequestToVehicle(vehicleCreateReq));
-        return createdVehicle is null ? UnprocessableEntity() : Created(Request.Path, createdVehicle);
+        var createdVehicle = await vehicleService.CreateAsync(mapper.ToVehicle(vehicleCreateReq));
+        return createdVehicle is null ? UnprocessableEntity() : Created(Request.Path, mapper.ToVehicleResponse(createdVehicle));
     }
 
     [HttpPut("{vehicleId}")]
     public async Task<IActionResult> UpdateVehicle([FromRoute] Guid vehicleId, [FromBody] VehicleCreateReq vehicleCreateReq)
     {
-        var updatedVehicle = mapper.MapRequestToVehicle(vehicleCreateReq);
+        var updatedVehicle = mapper.ToVehicle(vehicleCreateReq);
         updatedVehicle.Id = vehicleId;
         var vehicleUpdated = await vehicleService.UpdateAsync(updatedVehicle);
-        return vehicleUpdated is null ? UnprocessableEntity() : Ok(vehicleUpdated);
+        return vehicleUpdated is null ? UnprocessableEntity() : Ok(mapper.ToVehicleResponse(vehicleUpdated));
     }
 
     [HttpDelete("{vehicleId}")]

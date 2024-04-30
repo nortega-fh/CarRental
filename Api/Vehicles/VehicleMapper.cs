@@ -7,5 +7,8 @@ namespace Api.Vehicles;
 [Mapper(EnumMappingStrategy = EnumMappingStrategy.ByName, EnumMappingIgnoreCase = true)]
 public partial class VehicleMapper
 {
-    public partial Vehicle MapRequestToVehicle(VehicleCreateReq vehicleReq);
+    [MapperIgnoreTarget(nameof(Vehicle.Id))]
+    public partial Vehicle ToVehicle(VehicleCreateReq vehicleReq);
+    public partial VehicleResponse ToVehicleResponse(Vehicle vehicle);
+    public partial List<VehicleResponse> ToVehicleResponseList(List<Vehicle> vehicles);
 }

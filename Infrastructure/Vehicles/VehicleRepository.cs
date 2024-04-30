@@ -8,11 +8,11 @@ public class VehicleRepository(CarRentalContext carRentalContext, VehicleMapper 
 {
     public async Task<DomainVehicle?> CreateAsync(DomainVehicle vehicle)
     {
-        var vehicleToSave = mapper.DomainVehicleToVehicle(vehicle);
+        var vehicleToSave = mapper.ToDomainVehicle(vehicle);
         if (vehicleToSave is null) return null;
-        await carRentalContext.Vehicles.AddAsync(vehicleToSave);
+        var createdVehicle = (await carRentalContext.Vehicles.AddAsync(vehicleToSave)).Entity;
         var result = await carRentalContext.SaveChangesAsync();
-        return result < 1 ? null : vehicle;
+        return result < 1 ? null : mapper.ToEntityVehicle(createdVehicle);
     }
 
     public async Task DeleteByIdAsync(Guid vehicleId)
@@ -23,21 +23,21 @@ public class VehicleRepository(CarRentalContext carRentalContext, VehicleMapper 
 
     public async Task<List<DomainVehicle>> GetAllAsync(int pageSize, int pageNumber)
     {
-        return mapper.VehicleListToDomainVehicleList(await carRentalContext.Vehicles.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync());
+        return mapper.ToDomainVehicleList(await carRentalContext.Vehicles.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync());
     }
 
     public async Task<DomainVehicle?> GetByIdAsync(Guid vehicleId)
     {
-        var obtainedVehicle = await carRentalContext.Vehicles.Where(vehicle => vehicle.Id.Equals(vehicleId)).FirstOrDefaultAsync();
-        return mapper.VehicleToDomainVehicle(obtainedVehicle);
+        var obtainedVehicle = await carRentalContext.Vehicles.FindAsync(vehicleId);
+        return mapper.ToEntityVehicle(obtainedVehicle);
     }
 
     public async Task<DomainVehicle?> UpdateAsync(DomainVehicle vehicle)
     {
         var vehicleToUpdate = (await carRentalContext.Vehicles.FindAsync(vehicle.Id))!;
-        mapper.MapFromDomainVehicle(vehicle, vehicleToUpdate);
+        mapper.ToEntityVehicle(vehicle, vehicleToUpdate);
         var updatedVehicle = carRentalContext.Vehicles.Update(vehicleToUpdate).Entity;
         var result = await carRentalContext.SaveChangesAsync();
-        return result < 1 ? null : mapper.VehicleToDomainVehicle(updatedVehicle);
+        return result < 1 ? null : mapper.ToEntityVehicle(updatedVehicle);
     }
 }

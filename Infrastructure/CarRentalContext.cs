@@ -7,13 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class CarRentalContext : DbContext
+public class CarRentalContext(DbContextOptions<CarRentalContext> options) : DbContext(options)
 {
-    public CarRentalContext(DbContextOptions<CarRentalContext> options) : base(options)
-    {
-
-    }
-
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<RentalBranch> RentalBranches { get; set; }
     public DbSet<Fee> Fees { get; set; }
@@ -22,7 +17,6 @@ public class CarRentalContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Vehicle> Vehicles { get; set; }
-    public DbSet<VehicleType> VehicleTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

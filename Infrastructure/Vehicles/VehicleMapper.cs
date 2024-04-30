@@ -1,17 +1,13 @@
 ﻿using Riok.Mapperly.Abstractions;
 using DomainVehicle = Domain.Vehicles.Vehicle;
-using DomainVehicleType = Domain.Vehicles.VehicleType;
 
 namespace Infrastructure.Vehicles;
 
 [Mapper]
 public partial class VehicleMapper
 {
-    public partial Vehicle? DomainVehicleToVehicle(DomainVehicle? domainVehicle);
-    public partial DomainVehicle? VehicleToDomainVehicle(Vehicle? vehicle);
-    public partial List<DomainVehicle> VehicleListToDomainVehicleList(List<Vehicle> vehicle);
-    public partial void MapFromDomainVehicle(DomainVehicle domainVehicle, Vehicle vehicle);
-
-    private DomainVehicleType MapVehicleTypeToDomainVehicleType(VehicleType vehicleType) => vehicleType.Type;
-    private VehicleType MapDomainVehicleTypeToVehicleType(DomainVehicleType domainVehicleType) => new(default, domainVehicleType);
+    public partial Vehicle? ToDomainVehicle(DomainVehicle? domainVehicle);
+    public partial DomainVehicle? ToEntityVehicle(Vehicle? vehicle);
+    public partial List<DomainVehicle> ToDomainVehicleList(List<Vehicle> vehicle);
+    public partial void ToEntityVehicle(DomainVehicle domainVehicle, Vehicle vehicle);
 }

@@ -36,18 +36,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VehicleTypes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VehicleTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RentalBranches",
                 columns: table => new
                 {
@@ -103,7 +91,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(2,0)", precision: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -123,7 +111,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(2,0)", precision: 2, nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -147,8 +135,8 @@ namespace Infrastructure.Migrations
                     Year = table.Column<int>(type: "int", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     Mileage = table.Column<double>(type: "float", nullable: false),
-                    DailyPrice = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
-                    TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DailyPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -159,12 +147,6 @@ namespace Infrastructure.Migrations
                         column: x => x.RentalBranchId,
                         principalTable: "RentalBranches",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Vehicles_VehicleTypes_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "VehicleTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -270,11 +252,6 @@ namespace Infrastructure.Migrations
                 name: "IX_Vehicles_RentalBranchId",
                 table: "Vehicles",
                 column: "RentalBranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vehicles_TypeId",
-                table: "Vehicles",
-                column: "TypeId");
         }
 
         /// <inheritdoc />
@@ -300,9 +277,6 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "RentalBranches");
-
-            migrationBuilder.DropTable(
-                name: "VehicleTypes");
 
             migrationBuilder.DropTable(
                 name: "RentalCompanies");
