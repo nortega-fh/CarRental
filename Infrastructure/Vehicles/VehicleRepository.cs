@@ -21,9 +21,9 @@ public class VehicleRepository(CarRentalContext carRentalContext, VehicleMapper 
         await carRentalContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<DomainVehicle>> GetAllAsync(int pageSize, int pageNumber)
+    public async Task<List<DomainVehicle>> GetAllAsync(int pageSize, int pageNumber)
     {
-        return (IEnumerable<DomainVehicle>)await carRentalContext.Vehicles.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+        return mapper.VehicleListToDomainVehicleList(await carRentalContext.Vehicles.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync());
     }
 
     public async Task<DomainVehicle?> GetByIdAsync(Guid vehicleId)

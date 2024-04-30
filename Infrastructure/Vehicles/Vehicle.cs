@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Vehicles;
+﻿using Infrastructure.Bookings;
+
+namespace Infrastructure.Vehicles;
 
 public record Vehicle(
     Guid Id,
@@ -9,6 +11,7 @@ public record Vehicle(
     double Mileage,
     decimal DailyPrice)
 {
-
     public virtual VehicleType Type { get; set; } = null!;
+
+    public virtual List<Booking> Bookings { get; set; } = [];
 }

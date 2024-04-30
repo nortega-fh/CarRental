@@ -12,7 +12,7 @@ public class VehicleService(IVehicleRepository vehicleRepository) : IVehicleServ
         await vehicleRepository.DeleteByIdAsync(vehicleId);
     }
 
-    public async Task<IEnumerable<Vehicle>> GetAllAsync(int pageSize, int pageNumber)
+    public async Task<List<Vehicle>> GetAllAsync(int pageSize, int pageNumber)
     {
         return await vehicleRepository.GetAllAsync(pageSize, pageNumber);
     }

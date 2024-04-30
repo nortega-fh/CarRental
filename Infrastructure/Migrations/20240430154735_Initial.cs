@@ -103,7 +103,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(2,0)", precision: 2, nullable: false),
                     RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -123,7 +123,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(2,0)", precision: 2, nullable: false),
                     RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -147,7 +147,7 @@ namespace Infrastructure.Migrations
                     Year = table.Column<int>(type: "int", nullable: false),
                     Capacity = table.Column<int>(type: "int", nullable: false),
                     Mileage = table.Column<double>(type: "float", nullable: false),
-                    DailyPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    DailyPrice = table.Column<decimal>(type: "decimal(18,0)", nullable: false),
                     TypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -174,11 +174,12 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PickupBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DropOffBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VehicleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PickUpBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DropOffBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    RentalBranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -187,32 +188,32 @@ namespace Infrastructure.Migrations
                         name: "FK_Bookings_RentalBranches_DropOffBranchId",
                         column: x => x.DropOffBranchId,
                         principalTable: "RentalBranches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Bookings_RentalBranches_PickUpBranchId",
-                        column: x => x.PickUpBranchId,
+                        name: "FK_Bookings_RentalBranches_PickupBranchId",
+                        column: x => x.PickupBranchId,
                         principalTable: "RentalBranches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Bookings_RentalBranches_RentalBranchId",
+                        column: x => x.RentalBranchId,
+                        principalTable: "RentalBranches",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Bookings_RentalCompanies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "RentalCompanies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Bookings_Vehicles_VehicleId",
                         column: x => x.VehicleId,
                         principalTable: "Vehicles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -226,9 +227,14 @@ namespace Infrastructure.Migrations
                 column: "DropOffBranchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_PickUpBranchId",
+                name: "IX_Bookings_PickupBranchId",
                 table: "Bookings",
-                column: "PickUpBranchId");
+                column: "PickupBranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_RentalBranchId",
+                table: "Bookings",
+                column: "RentalBranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",

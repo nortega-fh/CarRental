@@ -9,6 +9,7 @@ public partial class VehicleMapper
 {
     public partial Vehicle? DomainVehicleToVehicle(DomainVehicle? domainVehicle);
     public partial DomainVehicle? VehicleToDomainVehicle(Vehicle? vehicle);
+    public partial List<DomainVehicle> VehicleListToDomainVehicleList(List<Vehicle> vehicle);
     public partial void MapFromDomainVehicle(DomainVehicle domainVehicle, Vehicle vehicle);
 
     private DomainVehicleType MapVehicleTypeToDomainVehicleType(VehicleType vehicleType) => vehicleType.Type;
