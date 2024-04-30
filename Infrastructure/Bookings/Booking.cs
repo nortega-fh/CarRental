@@ -5,7 +5,7 @@ using Infrastructure.Vehicles;
 
 namespace Infrastructure.Bookings;
 
-public record Booking(Guid Id, DateTime StartDate, DateTime EndDate)
+public record Booking(Guid Id, DateTime StartDate, DateTime EndDate, Guid PickupBranchId, Guid DropOffBranchId)
 {
     public virtual Vehicle Vehicle { get; set; } = null!;
     public virtual User User { get; set; } = null!;

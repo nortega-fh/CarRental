@@ -37,7 +37,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PickUpBranchId")
+                    b.Property<Guid>("PickupBranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RentalBranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartDate")
@@ -55,7 +58,9 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("DropOffBranchId");
 
-                    b.HasIndex("PickUpBranchId");
+                    b.HasIndex("PickupBranchId");
+
+                    b.HasIndex("RentalBranchId");
 
                     b.HasIndex("UserId");
 
@@ -71,7 +76,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -125,7 +131,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -234,7 +241,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("DailyPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal");
 
                     b.Property<string>("Make")
                         .IsRequired()
@@ -250,8 +258,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid?>("RentalBranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
@@ -260,55 +269,43 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("RentalBranchId");
 
-                    b.HasIndex("TypeId");
-
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("Infrastructure.Vehicles.VehicleType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VehicleTypes");
                 });
 
             modelBuilder.Entity("Infrastructure.Bookings.Booking", b =>
                 {
                     b.HasOne("Infrastructure.RentalCompanies.RentalCompany", "Company")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Infrastructure.RentalBranches.RentalBranch", "DropOffBranch")
                         .WithMany()
                         .HasForeignKey("DropOffBranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Infrastructure.RentalBranches.RentalBranch", "PickUpBranch")
                         .WithMany()
-                        .HasForeignKey("PickUpBranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("PickupBranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("Infrastructure.RentalBranches.RentalBranch", null)
+                        .WithMany("Bookings")
+                        .HasForeignKey("RentalBranchId");
 
                     b.HasOne("Infrastructure.Users.User", "User")
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Infrastructure.Vehicles.Vehicle", "Vehicle")
-                        .WithMany()
+                        .WithMany("Bookings")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Company");
@@ -371,18 +368,12 @@ namespace Infrastructure.Migrations
                     b.HasOne("Infrastructure.RentalBranches.RentalBranch", null)
                         .WithMany("Vehicles")
                         .HasForeignKey("RentalBranchId");
-
-                    b.HasOne("Infrastructure.Vehicles.VehicleType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("Infrastructure.RentalBranches.RentalBranch", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("Fees");
 
                     b.Navigation("Taxes");
@@ -392,10 +383,17 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Infrastructure.RentalCompanies.RentalCompany", b =>
                 {
+                    b.Navigation("Bookings");
+
                     b.Navigation("Branches");
                 });
 
             modelBuilder.Entity("Infrastructure.Users.User", b =>
+                {
+                    b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("Infrastructure.Vehicles.Vehicle", b =>
                 {
                     b.Navigation("Bookings");
                 });

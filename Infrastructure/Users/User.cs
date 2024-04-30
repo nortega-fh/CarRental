@@ -1,7 +1,6 @@
-﻿namespace Infrastructure.Users;
+﻿using Infrastructure.Bookings;
 
-using Bookings;
-
+namespace Infrastructure.Users;
 public record User(
         Guid Id,
         string Email,
@@ -13,10 +12,8 @@ public record User(
         string DriversLicenseNumber,
         string AddressLine1,
         string? AddressLine2,
-        string City
-    )
+        string City)
 {
-
     public virtual UserRole Role { get; set; } = null!;
-    public virtual List<Booking> Bookings { get; set; } = null!;
+    public virtual List<Booking> Bookings { get; set; } = [];
 }
